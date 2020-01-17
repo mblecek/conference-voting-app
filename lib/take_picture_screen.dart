@@ -53,10 +53,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   Widget build(BuildContext context) {
     AppState appState = Provider.of<AppState>(context);
 
-    final String imageName = ModalRoute.of(context).settings.arguments;
+    final int voteIndex = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
-      appBar: AppBar(title: Text(imageName)),
+      appBar: AppBar(title: Text('Vote $voteIndex')),
       // Wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner
       // until the controller has finished initializing.
@@ -94,7 +94,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // Attempt to take a picture and log where it's been saved.
             await _controller.takePicture(path);
 
-            appState.setImage(imageName, path);
+            appState.setImage(voteIndex, path);
             // If the picture was taken, display it on a new screen.
             Navigator.push(
               context,

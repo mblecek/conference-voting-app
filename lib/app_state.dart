@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 class AppState with ChangeNotifier {
-  final Map<String, String> _images = new Map();
+  final Map<int, String> _images = new Map();
 
-  Map<String, String> get images => _images;
+  Map<int, String> get images => _images;
 
-  void setImage(String name, String path) {
-    _images[name] = path;
+  void setImage(int index, String path) {
+    _images[index] = path;
     notifyListeners();
   }
 }

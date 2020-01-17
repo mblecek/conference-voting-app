@@ -1,9 +1,16 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:conference_voting_app/app_state.dart';
 import 'package:conference_voting_app/display_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:image/image.dart' as image;
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    AppState appState = Provider.of<AppState>(context);
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -37,11 +44,11 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: Container(child: DisplayImage(imageName: "Vote 1")),
+              child: Container(child: DisplayImage(voteIndex: 1)),
               flex: 2,
             ),
             Expanded(
-              child: Container(child: DisplayImage(imageName: "Vote 2")),
+              child: Container(child: DisplayImage(voteIndex: 2)),
               flex: 2,
             ),
             Expanded(
@@ -54,7 +61,42 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          var body = {};
+
+          appState.images.forEach((int key, String path) {
+            if (path != null) {
+              File file = File(path);
+              image.Image img = image.decodeImage(file.readAsBytesSync());
+
+              var r, g, b, max_rgb;
+              var light = 0;
+              var dark = 0;
+
+              for (var x = 0; x < img.data.length; x += 4) {
+                r = img.data[x];
+                g = img.data[x + 1];
+                b = img.data[x + 2];
+
+                max_rgb = max<int>(max<int>(r, g), b);
+                if (max_rgb < 128)
+                  dark++;
+                else
+                  light++;
+              }
+
+             // var dl_diff = (light - dark) / (img.width * img.height);
+              //body['$key'] = 'data:image/png;base64,' + base64Encode(bytes);
+              body['$key'] = light;
+            }
+          });
+
+          // const url =
+          //     "https://europe-west1-voting-gun.cloudfunctions.net/computeVotes";
+          // var response = await http.post(url, body: body);
+
+          // print(response.body);
+
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -62,7 +104,7 @@ class HomeScreen extends StatelessWidget {
               return AlertDialog(
                 title: new Text("Evaluation"),
                 content: new Text(
-                  "35/20",
+                  "95 / 5",
                   style: TextStyle(fontSize: 30.0),
                 ),
                 actions: <Widget>[
@@ -78,7 +120,7 @@ class HomeScreen extends StatelessWidget {
             },
           );
         },
-        tooltip: 'Increment',
+        tooltip: 'Compute',
         child: Icon(Icons.play_arrow),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

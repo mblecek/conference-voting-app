@@ -7,15 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DisplayImage extends StatelessWidget {
-  final String imageName;
+  final int voteIndex;
 
-  DisplayImage({Key key, @required this.imageName}) : super(key: key);
+  DisplayImage({Key key, @required this.voteIndex}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     AppState appState = Provider.of<AppState>(context);
 
-    String imagePath = appState.images[this.imageName];
+    String imagePath = appState.images[this.voteIndex];
 
     return Card(
         child: Column(
@@ -24,7 +24,7 @@ class DisplayImage extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.image),
           // title: new Text(this.imageName),
-          title: Text(imageName),
+          title: Text('Vote $voteIndex'),
           //subtitle: Text('Music by Julie Gable. Lyrics by Sidney Stein.'),
         ),
         imagePath != null
@@ -54,7 +54,7 @@ class DisplayImage extends StatelessWidget {
                   color: Colors.white,
                   onPressed: () {
                     Navigator.pushNamed(context, TakePictureScreen.routeName,
-                        arguments: imageName);
+                        arguments: voteIndex);
                   }),
             )
           ],
